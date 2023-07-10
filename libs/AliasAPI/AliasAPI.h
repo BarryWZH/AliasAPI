@@ -26,11 +26,13 @@ public:
 
     void autoUpList();
 
-private:
+public:
 
     void readConfig(string configfilepath);
 
     void getData();
+
+    void loadSlug();
 
     void initializeCurl();
 
@@ -53,7 +55,7 @@ public:
 
     void patch_search();
 
-    void listing_product_multi(string params, map<string, int>& mpdata);
+    void listing_product_multi(string params, vector<pair<string, int>>& mpdata);
 
 public:
 
@@ -70,12 +72,12 @@ private:
 
     // 数据相关
     string datapath_;
+    string slugpath_;
     vector<string> vsku_;
     vector<float> vsize_;
     vector<int> vnum_;
     vector<float> vprice_;
     vector<bool> vuplist_;
-    map<string, int> mpsku2id_;
 
     // url,token信息
     string token_;
@@ -101,8 +103,8 @@ private:
 
     // product_slug_id: <sku, slug>
     map<string, string> products_slug_;
-    queue<string> processed_;    // 已经上架
-    queue<string> unprocessed_;  // 未上架
+    queue<pair<string, int>> processed_;    // 已经上架
+    queue<pair<string, int>> unprocessed_;  // 未上架
     int total_num_;           // 总共要上架的数量
     
     mutex mtxslug_; // 处理product_slug

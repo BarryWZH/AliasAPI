@@ -46,3 +46,6 @@ password: "lsnhfk519"
 
 # 表格位置
 datapath: "/home/zhwang/WZH/SneakerAPI/file/data.xlsx"
+
+# slug位置；
+slugpath: "/home/zhwang/WZH/SneakerAPI-Cpp/data/skudata.txt"

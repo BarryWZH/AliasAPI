@@ -88,6 +88,7 @@ void AliasAPI::readConfig(string configfilepath)
 
     // 读入+解析数据
     fs_["datapath"] >> datapath_;
+    fs_["slugpath"] >> slugpath_;
 
     fs_["patchsearchsize"] >> patchsearchsize_;
     fs_["patchuplistsize"] >> patchuplistsize_;
@@ -140,10 +141,9 @@ void AliasAPI::getData(){
     // 加载 unprocessed的search_slug
     total_num_ = 0;
     for(int i=0; i< vsku_.size(); ++i){
-        mpsku2id_[vsku_[i]] = i;
         for(int j=0;j<vnum_[i]; ++j)
         {
-            unprocessed_.push(vsku_[i]);
+            unprocessed_.push(make_pair(vsku_[i], i));
             total_num_++;
         }
     }
@@ -151,6 +151,22 @@ void AliasAPI::getData(){
 
     // 搜索线程设置为0；
     numsearchthread_ = 0;
+
+    loadSlug();
+}
+
+void AliasAPI::loadSlug()
+{
+    ifstream ifs(slugpath_);
+
+    string sku, slug;
+    while(!ifs.eof())
+    {
+        ifs >> sku >> slug;
+        products_slug_[sku] = slug;
+    }
+
+    ifs.close();
 }
 
 void AliasAPI::initializeCurl()
@@ -274,13 +290,19 @@ void AliasAPI::save_sku(string filename)
     for(int i=0; i<vsku_.size(); ++i){
         q.push(vsku_[i]);
     }
+    int num=0;
     while(!q.empty())
     {
         string keyword = q.front();
         q.pop();
+        if(sku2slug.count(keyword));
         search_by_sku(keyword, 0, isfound);
         if(isfound)
+        {
             sku2slug[keyword] = products_slug_[keyword];
+            num++;
+            cout << num << " " << keyword << " " << sku2slug[keyword] << endl;
+        }
         else
             q.push(keyword);
     }
@@ -299,7 +321,7 @@ void AliasAPI::patch_search()
             mtxsearch_.lock();
             bool found = false;
             if(numsearchthread_ <= patchsearchsize_)
-                string word = unprocessed_.front();
+                // string word = unprocessed_.front();
                 unprocessed_.pop();
                 
                 // thread t(&AliasAPI::search_by_sku, this, std::move(word), 0, std::move(found));
@@ -308,7 +330,7 @@ void AliasAPI::patch_search()
     }
 }
 
-void AliasAPI::listing_product_multi(string params, map<string, int>& mpdata)
+void AliasAPI::listing_product_multi(string params, vector<pair<string, int>>& mpdata)
 {
     response_.clear();
     string requesturl = base_url_ + function_url_["listing_product_multi_url"] + "?token=" + token_
@@ -328,24 +350,29 @@ void AliasAPI::listing_product_multi(string params, map<string, int>& mpdata)
         if(jsonData["data"].contains("succeeded"))
         {
             int size = jsonData["data"]["succeeded"].size();
+            cout << size << endl;
             if(size > 0)
             {
                 for(int i=0;i<size;++i)
                 {
                     string sku = jsonData["data"]["succeeded"][i]["product"]["sku"];
                     replace(sku.begin(), sku.end(), ' ', '-');
-                    processed_.push(sku);
-                    mpdata[sku]--;
+                    // processed_.push(sku);
+                    // mpdata[sku]--;
                 }
             }
         }
 
         // add failure
-        for(auto it: mpdata)
+        if(jsonData["data"].contains("failed"))
         {
-            int size = it.second;
-            for(int i=0;i<size;++i)
-                unprocessed_.push(it.first);
+            ofstream ofs("/home/zhwang/WZH/SneakerAPI-Cpp/1.txt", ios::app);
+            ofs << "输入" << endl;
+            ofs << params << endl;
+            ofs << "回包" << endl;
+            ofs << jsonData << endl;
+            // cout << jsonData<< endl;
+            ofs.close();
         }
     }   
 }
@@ -363,11 +390,13 @@ void AliasAPI::autoUpList()
 
     json jsonData;
     json products;
-    map<string, int> mpdata;
+    vector<pair<string, int>> mpdata;
 
     while(!unprocessed_.empty())
     {
-        string keyword = unprocessed_.front();
+        // cout << "Unprocessed: " << unprocessed_.size() << endl;
+        string keyword = unprocessed_.front().first;
+        int id = unprocessed_.front().second;
         unprocessed_.pop();
 
         if(!products_slug_.count(keyword))
@@ -380,15 +409,14 @@ void AliasAPI::autoUpList()
             if(++t > 3)
                 break;
         }
-        if(!found) 
+        if(!products_slug_.count(keyword)) 
         {
-            unprocessed_.push(keyword);
+            unprocessed_.push(make_pair(keyword, id));
             continue; //还没找到就跳过,将这个号放后面
         }
-
         // if found
         string slug = products_slug_[keyword];
-        int id = mpsku2id_[keyword];
+        // cout << keyword << " " << slug << endl;
        
         json temp;
         temp["sku"] = keyword;
@@ -396,7 +424,7 @@ void AliasAPI::autoUpList()
         temp["price_cents"] = vprice_[id];
         temp["size_us"] = vsize_[id];
 
-        mpdata[keyword]++;
+        mpdata.push_back(make_pair(keyword, id));
 
         products.push_back(temp);
         patch++;
@@ -407,7 +435,7 @@ void AliasAPI::autoUpList()
             auto t1 = chrono::steady_clock::now();
             listing_product_multi(jsonData.dump(), mpdata);
             auto t2 = chrono::steady_clock::now();
-            cout << "multiuplist: " << chrono::duration<double, ratio<1, 1000>>(t2 - t1).count() << " ms" << endl;
+            cout << "multiuplist: " << chrono::duration<double>(t2 - t1).count() << " s" << endl;
             patch = 0;
             products.clear();
             jsonData.clear();
@@ -417,6 +445,10 @@ void AliasAPI::autoUpList()
         if(processed_.size() == total_num_)
         {
             cout << "Uplist all products successfully" << endl;
+            // for(int i=0; i<processed_.size(); ++i)
+            // {
+            //     int id = processed_[i].second
+            // }
             break;
         }
     }
