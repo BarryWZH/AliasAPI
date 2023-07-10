@@ -1,0 +1,48 @@
+%YAML:1.0
+---
+
+token: "AHAO-031c2e43651e45028cbfc5ef5e917864"
+
+# url
+base_url: "http://goatapi.spiderx.cc:61030"
+
+ping_url: "/ping"
+query_by_sku_url: "/api/alias/query_by_sku"
+query_by_condition_url: "/api/alias/query_by_condition"
+init_auth_url: "/api/alias/init_auth"
+login_url: "/api/alias/login"
+self_info_url: "/api/alias/self_info"
+seller_info_url: "/api/alias/seller_info"
+update_access_token_url: "/api/alias/update_access_token"
+get_product_detail_url: "/api/alias/get_product_detail"
+get_recent_orders_url: "/api/alias/get_recent_orders"
+lowest_price_url: "/api/alias/lowest_price"
+get_selling_info_url: "/api/alias/get_selling_info"
+get_sold_info_url: "/api/alias/get_sold_info"
+get_selling_products_url: "/api/alias/get_selling_products"
+get_sold_products_url: "/api/alias/get_sold_products"
+get_history_products_url: "/api/alias/get_history_products"
+get_sold_products_detail_url: "/api/alias/get_sold_products_detail"
+enable_vacation_mode_url: "/api/alias/enable_vacation_mode"
+cancel_product_url: "/api/alias/cancel_product"
+update_price_single_url: "/api/alias/update_price_single"
+listing_product_single_step1_url: "/api/alias/listing_product_single_step1"
+listing_product_single_step2_url: "/api/alias/listing_product_single_step2"
+listing_product_multi_url: "/api/alias/listing_product_multi"
+
+# params setting
+# 1:use 0:not use
+use_debug: 0
+use_verbose: 0
+
+patchsearchsize: 10
+
+patchuplistsize: 50
+
+
+# 账号信息
+account:  "hfk0503@outlook.com"
+password: "lsnhfk519"
+
+# 表格位置
+datapath: "/home/zhwang/WZH/SneakerAPI/file/data.xlsx"

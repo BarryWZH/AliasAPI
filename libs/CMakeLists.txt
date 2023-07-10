@@ -1,0 +1,2 @@
+add_subdirectory(AliasAPI)
+target_include_directories(AliasAPI PUBLIC AliasAPI)
