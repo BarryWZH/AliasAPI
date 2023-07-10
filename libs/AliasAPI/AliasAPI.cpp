@@ -266,6 +266,30 @@ void AliasAPI::search_by_sku(string keyword, int page, bool& found)
     }
 }
 
+void AliasAPI::save_sku(string filename)
+{
+    map<string, string> sku2slug;
+    bool isfound;
+    queue<string> q;
+    for(int i=0; i<vsku_.size(); ++i){
+        q.push(vsku_[i]);
+    }
+    while(!q.empty())
+    {
+        string keyword = q.front();
+        q.pop();
+        search_by_sku(keyword, 0, isfound);
+        if(isfound)
+            sku2slug[keyword] = products_slug_[keyword];
+        else
+            q.push(keyword);
+    }
+
+    ofstream ofs(filename);
+    for(auto it:sku2slug)
+        ofs << it.first << " " << it.second << endl;
+}
+
 void AliasAPI::patch_search()
 {
     while(1)

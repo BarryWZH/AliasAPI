@@ -49,6 +49,8 @@ public:
 
     void search_by_sku(string keyword, int page, bool& found);
 
+    void save_sku(string filename);
+
     void patch_search();
 
     void listing_product_multi(string params, map<string, int>& mpdata);
