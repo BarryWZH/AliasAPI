@@ -150,7 +150,7 @@ void AliasAPI::getData(){
     for(int i=0; i< vsku_.size(); ++i){
         for(int j=0;j<vnum_[i]; ++j)
         {
-            unprocessed_.push(vsku_[i]);
+            unprocessed_.push({vsku_[i], vsize_[i]});
             total_num_++;
         }
     }
@@ -446,8 +446,9 @@ void AliasAPI::listing_product_multi(string params)
                 for(int i=0;i<size;++i)
                 {
                     string sku = jsonData["data"]["succeeded"][i]["product"]["sku"];
+                    float size = jsonData["data"]["succeeded"][i]["size_option"]["value"];
                     replace(sku.begin(), sku.end(), ' ', '-');
-                    processed_.push(sku);
+                    processed_.push({sku, size});
                 }
             }
         }
@@ -469,8 +470,9 @@ void AliasAPI::listing_product_multi(string params)
             for(int i = 0; i<size; ++i)
             {
                 string slug = temp[i]["product_id"];
-                string str = temp[i]["size_option"]["value"];
-                float size = atof(str.c_str());
+                float size = temp[i]["size_option"]["value"];
+                string sku = slug_products_[slug];
+                unprocessed_.push({sku, size});
             }
             
         }
@@ -494,13 +496,13 @@ void AliasAPI::autoUpList()
 
     json jsonData;
     json products;
-    vector<pair<string, int>> mpdata;
     string str;
 
     while(!unprocessed_.empty())
     {
         // cout << "Unprocessed: " << unprocessed_.size() << endl;
-        string keyword = unprocessed_.front();
+        string keyword = unprocessed_.front().first;
+        float size = unprocessed_.front().second;
         int id = products_id_[keyword];
         unprocessed_.pop();
 
@@ -516,7 +518,7 @@ void AliasAPI::autoUpList()
         }
         if(!products_slug_.count(keyword)) 
         {
-            unprocessed_.push(keyword);
+            unprocessed_.push({keyword, size});
             continue; //还没找到就跳过,将这个号放后面
         }
         // if found
@@ -529,7 +531,6 @@ void AliasAPI::autoUpList()
         temp["price_cents"] = vprice_[id];
         temp["size_us"] = vsize_[id];
 
-        mpdata.push_back(make_pair(keyword, id));
 
         products.push_back(temp);
         patch++;
@@ -544,7 +545,6 @@ void AliasAPI::autoUpList()
             patch = 0;
             products.clear();
             jsonData.clear();
-            mpdata.clear();
         }
 
         if(processed_.size() == total_num_)

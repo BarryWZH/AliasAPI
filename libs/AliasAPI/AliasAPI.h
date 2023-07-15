@@ -110,8 +110,8 @@ public:
     map<string, string> slug_products_;
     map<string, int> products_id_;
     map<string, vector<float>> slug_size_;
-    queue<string> processed_;    // 已经上架
-    queue<string> unprocessed_;  // 未上架
+    queue<pair<string, float>> processed_;    // 已经上架
+    queue<pair<string, float>> unprocessed_;  // 未上架
     int total_num_;           // 总共要上架的数量
     
     mutex mtxslug_; // 处理product_slug
