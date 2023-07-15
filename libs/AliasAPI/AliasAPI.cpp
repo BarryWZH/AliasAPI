@@ -9,9 +9,6 @@ AliasAPI::AliasAPI(string configfilepath){
 
     // 读取配置文件数据
     readConfig(configfilepath);
-    
-    // 获取表格数据
-    getData();
 
     // 初始化curl
     initializeCurl();
@@ -21,6 +18,9 @@ AliasAPI::AliasAPI(string configfilepath){
 
     // 初始化获取auth_token、access_token
     getToken();
+
+    // 获取表格数据
+    getData();
 }
 
 AliasAPI::~AliasAPI(){
@@ -172,7 +172,7 @@ void AliasAPI::getData(){
     }
 
     cout << "TotalNum UpList:        " << total_num_ << endl;
-    cout << "TotalNum NeedProcessed: " << processed_.size() << endl;
+    cout << "TotalNum NeedProcessed: " << unprocessed_.size() << endl;
     cout << "TotalNum InValud:       " << invalid_.size() << endl;
     cout << "TotalNum UnFound:       " << unfound_.size() << endl;
  
@@ -201,7 +201,7 @@ void AliasAPI::loadSlug()
         for(int i=0;i<n;++i)
         {
             ifs >> size;
-            slug_size_[sku].insert(size);
+            slug_size_[slug].insert(size);
         }
     }
 
@@ -408,15 +408,17 @@ void AliasAPI::get_product_detail(string slug, vector<float>& vsize, int& found)
 void AliasAPI::save_sku()
 {
     ofstream ofs(slugpath_, ios::app);
-    int isfound;
+    int isfound = 0;
     queue<string> q;
     for(int i=0; i<vsku_.size(); ++i){
+        if(products_slug_.count(vsku_[i])) continue;
         q.push(vsku_[i]);
     }
     int num=0;
     string slug;
     while(!q.empty())
     {
+        cout << q.size() << endl;
         string keyword = q.front();
         q.pop();
         cout << num++ << " " << keyword;
@@ -435,8 +437,13 @@ void AliasAPI::save_sku()
             {
                 cout << " " << slug << " ";
                 cout << vsize.size() << " ";
+                products_slug_[keyword] = slug;
+                slug_products_[slug] = keyword;
                 for(int  i=0; i<vsize.size(); ++i)
+                {
+                    slug_size_[slug].insert(vsize[i]);
                     cout << vsize[i] << " ";
+                }
                 cout << endl;
                 ofs << keyword << " " << slug << " ";
                 ofs << vsize.size() << " ";
@@ -447,11 +454,15 @@ void AliasAPI::save_sku()
             else
             {
                 q.push(keyword);
+                cout << endl;
                 continue;
             }
         }
         else
+        {
             q.push(keyword);
+            cout << endl;
+        }
     }
     cout << "savesku complete!\n";
     ofs.close();
