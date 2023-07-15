@@ -66,7 +66,7 @@ void save_sku(AliasAPI &ap)
 int main()
 {
     AliasAPI ap("/home/zhwang/WZH/SneakerAPI-Cpp/data/config.yaml");
-    // ap.autoUpList();
+    ap.autoUpList();
     // ap.loadSlug();
     // save_sku(ap);
     // ap.save_sku();

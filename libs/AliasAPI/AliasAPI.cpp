@@ -4,6 +4,7 @@ using namespace std;
 #define DEBUG 0
 
 int tttt=0;
+
 AliasAPI::AliasAPI(string configfilepath){
 
     // 读取配置文件数据
@@ -92,6 +93,7 @@ void AliasAPI::readConfig(string configfilepath)
     // 读入+解析数据
     fs_["datapath"] >> datapath_;
     fs_["slugpath"] >> slugpath_;
+    fs_["respath"] >> respath_;
 
     fs_["patchsearchsize"] >> patchsearchsize_;
     fs_["patchuplistsize"] >> patchuplistsize_;
@@ -115,8 +117,7 @@ void AliasAPI::getData(){
     int height = ws.rows().length();
     int width = ws.columns().length();
 
-    // cout << height << " " << width << endl;
-
+    // 加载上架数据
     for (int i = 1; i < height; ++i)
     {
         auto cellrow = ws.rows()[i];
@@ -136,42 +137,72 @@ void AliasAPI::getData(){
         products_id_[str] = i-1;
     }
 
-    // for(int i=0;i<vsku_.size();++i)
-    // {
-    //     cout << "sku: "   << vsku_[i] << " ";
-    //     cout << "size:"   << vsize_[i] << " ";
-    //     cout << "num:"    << vnum_[i] << " ";
-    //     cout << "price:"  << vprice_[i] << " ";
-    //     cout << "uplist:" << vuplist_[i] << endl;
-    // }
-    
-    // 加载 unprocessed的search_slug
+    // 加载本地存储的slug信息和对应尺码信息
+    loadSlug();
+
+    // 更新slug信息和对应的尺码信息
+    save_sku();
+
+    // 处理一些状态量
     total_num_ = 0;
+
+    string keyword, slug;
     for(int i=0; i< vsku_.size(); ++i){
         for(int j=0;j<vnum_[i]; ++j)
         {
-            unprocessed_.push({vsku_[i], vsize_[i]});
             total_num_++;
+            // 没有找到这一款则添加到未找到队列
+            if(!products_slug_.count(vsku_[i]))
+            {
+                vuplist_[i] = 3;
+                unfound_.push({vsku_[i], vsize_[i]});
+                continue;
+            }
+
+            // 存在该尺码则添加到代处理队列
+            if(slug_size_[vsku_[i]].count(vsize_[i])){
+                unprocessed_.push({vsku_[i], vsize_[i]});
+            }
+            // 不存在该尺码则放入不合理队列
+            else{
+                invalid_.push({vsku_[i], vsize_[i]});
+                vuplist_[i] = 2;
+            }
         }
     }
-    cout << "TotalNum: " << total_num_ << endl;
 
+    cout << "TotalNum UpList:        " << total_num_ << endl;
+    cout << "TotalNum NeedProcessed: " << processed_.size() << endl;
+    cout << "TotalNum InValud:       " << invalid_.size() << endl;
+    cout << "TotalNum UnFound:       " << unfound_.size() << endl;
+ 
     // 搜索线程设置为0；
     numsearchthread_ = 0;
-
-    loadSlug();
 }
 
 void AliasAPI::loadSlug()
 {
     ifstream ifs(slugpath_);
+    
+    if(!ifs.is_open())
+    {
+        ifs.close();
+        return;
+    }
 
     string sku, slug;
+    int n;
+    float size;
     while(!ifs.eof())
     {
-        ifs >> sku >> slug;
+        ifs >> sku >> slug >> n;
         products_slug_[sku] = slug;
         slug_products_[slug] = sku;
+        for(int i=0;i<n;++i)
+        {
+            ifs >> size;
+            slug_size_[sku].insert(size);
+        }
     }
 
     ifs.close();
@@ -265,7 +296,7 @@ bool AliasAPI::login()
     return false;
 }
 
-void AliasAPI::search_by_sku(string keyword, int page, string& str, int& found)
+void AliasAPI::search_by_sku(string keyword, int page, string& slug, int& found)
 {
     response_.clear();
     string requesturl = base_url_ + function_url_["query_by_sku_url"] + "?token=" + token_
@@ -281,9 +312,9 @@ void AliasAPI::search_by_sku(string keyword, int page, string& str, int& found)
         json jsonData = json::parse(response_);
         // 查找到
         if(jsonData["data"]["hits"].size() > 0){
-            products_slug_[keyword] = jsonData["data"]["hits"][0]["slug"];
+            // products_slug_[keyword] = jsonData["data"]["hits"][0]["slug"];
             // cout << products_slug_[keyword] << endl;
-            str = products_slug_[keyword];
+            slug = jsonData["data"]["hits"][0]["slug"];
             found = 1;
         }
         else
@@ -291,9 +322,10 @@ void AliasAPI::search_by_sku(string keyword, int page, string& str, int& found)
     }
 }
 
-void AliasAPI::get_product_detail(string slug, vector<float>& size, int& found)
+void AliasAPI::get_product_detail(string slug, vector<float>& vsize, int& found)
 {
     response_.clear();
+    vsize.clear();
     string requesturl = base_url_ + function_url_["get_product_detail_url"] + "?token=" + token_
     + "&auth=" + auth_ + "&access_token=" + access_token_ + "&slug=" + slug;
 
@@ -310,8 +342,12 @@ void AliasAPI::get_product_detail(string slug, vector<float>& size, int& found)
             int size = temp.size();
             for(int i=0; i<size; ++i)
             {
-                float value = temp[i]["value"];
-                slug_size_[slug].push_back(value);
+                if(temp[i].contains("value"))
+                {
+                    float value = temp[i]["value"];
+                    // slug_size_[slug].insert(value);
+                    vsize.push_back(value);
+                }
             }
             found = 1;
         }
@@ -378,7 +414,7 @@ void AliasAPI::save_sku()
         q.push(vsku_[i]);
     }
     int num=0;
-    string str;
+    string slug;
     while(!q.empty())
     {
         string keyword = q.front();
@@ -386,14 +422,33 @@ void AliasAPI::save_sku()
         cout << num++ << " " << keyword;
         if(products_slug_.count(keyword)) 
         {
+            // found
             cout << endl;
             continue;
         }
-        search_by_sku(keyword, 0, str, isfound);
+        search_by_sku(keyword, 0, slug, isfound);
         if(isfound)
         {
-            cout << " " << str << endl;
-            ofs << keyword << " " << str << endl;
+            vector<float> vsize;
+            get_product_detail(slug, vsize, isfound);
+            if(isfound)
+            {
+                cout << " " << slug << " ";
+                cout << vsize.size() << " ";
+                for(int  i=0; i<vsize.size(); ++i)
+                    cout << vsize[i] << " ";
+                cout << endl;
+                ofs << keyword << " " << slug << " ";
+                ofs << vsize.size() << " ";
+                for(int i=0; i<vsize.size(); ++i)
+                    ofs << vsize[i] << " ";
+                ofs << endl;
+            }
+            else
+            {
+                q.push(keyword);
+                continue;
+            }
         }
         else
             q.push(keyword);
@@ -487,16 +542,12 @@ void AliasAPI::autoUpList()
         return;
     }
 
-    // update slug information
-    save_sku();
-
     int patch = 0;
-    int found = false;
     int t=0;
 
     json jsonData;
     json products;
-    string str;
+    string slug;
 
     while(!unprocessed_.empty())
     {
@@ -506,22 +557,6 @@ void AliasAPI::autoUpList()
         int id = products_id_[keyword];
         unprocessed_.pop();
 
-        if(!products_slug_.count(keyword))
-            search_by_sku(keyword, 0, str, found);
-        // 依然没找到
-        t = 0;
-        while(!products_slug_.count(keyword))
-        {
-            search_by_sku(keyword, 0, str, found);
-            if(++t > 3)
-                break;
-        }
-        if(!products_slug_.count(keyword)) 
-        {
-            unprocessed_.push({keyword, size});
-            continue; //还没找到就跳过,将这个号放后面
-        }
-        // if found
         string slug = products_slug_[keyword];
         // cout << keyword << " " << slug << endl;
        
@@ -530,7 +565,6 @@ void AliasAPI::autoUpList()
         temp["product_slug"] = slug;
         temp["price_cents"] = vprice_[id];
         temp["size_us"] = vsize_[id];
-
 
         products.push_back(temp);
         patch++;
@@ -546,21 +580,67 @@ void AliasAPI::autoUpList()
             products.clear();
             jsonData.clear();
         }
-
-        if(processed_.size() == total_num_)
-        {
-            cout << "Uplist all products successfully" << endl;
-            // for(int i=0; i<processed_.size(); ++i)
-            // {
-            //     int id = processed_[i].second
-            // }
-            break;
-        }
     }
-    cout << "Uplist: " << tttt << endl;
+
+    cout << "Successful Uplist:      " << tttt << endl;
+    cout << "Processed queue size:   " << processed_.size() << endl;
+    cout << "Unprocessed queue size: " << unprocessed_.size() << endl;
+
+    cout << "TotalNum UpList:        " << total_num_ << endl;
+    cout << "TotalNum InValud:       " << invalid_.size() << endl;
+    cout << "TotalNum UnFound:       " << unfound_.size() << endl;
+
+    WriteResult();
+
 }
 
 // --------------------- function -----------------------
+
+void AliasAPI::WriteResult()
+{
+    string processedpath = respath_ + "processed.txt";
+    string unprocessedpath = respath_ + "unprocessed.txt";
+    string invalidpath = respath_ + "invalid.txt";
+    string unfoundpath = respath_ + "unfound.txt";
+
+    // processed
+    ofstream ofs(processedpath);
+    for(int i=0; i<processed_.size(); ++i)
+    {
+        auto temp = processed_.front();
+        processed_.pop();
+        ofs << temp.first << " " << temp.second << endl;
+    }
+    ofs.close();
+
+    // unprocessed
+    ofs.open(unprocessedpath);
+    for(int i=0; i<unprocessed_.size(); ++i)
+    {
+        auto temp = unprocessed_.front();
+        unprocessed_.pop();
+        ofs << temp.first << " " << temp.second << endl;
+    }
+
+    // invalid
+    ofs.open(invalidpath);
+    for(int i=0; i<invalid_.size(); ++i)
+    {
+        auto temp = invalid_.front();
+        invalid_.pop();
+        ofs << temp.first << " " << temp.second << endl;
+    }
+
+    // unfound
+    ofs.open(unfoundpath);
+    for(int i=0; i<unfound_.size(); ++i)
+    {
+        auto temp = unfound_.front();
+        unfound_.pop();
+        ofs << temp.first << " " << temp.second << endl;
+    }
+
+}
 
 size_t AliasAPI::WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output)
 {

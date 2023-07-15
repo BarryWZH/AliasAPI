@@ -13,6 +13,7 @@
 #include <functional>
 #include <algorithm>
 #include <chrono>
+#include <set>
 using namespace std;
 using json = nlohmann::json;
 
@@ -65,6 +66,8 @@ public:
 
     // function 
 
+    void WriteResult();
+
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output);
 
     static int DebugCallback(CURL* handle, curl_infotype type, char* data, size_t size, void* userptr);
@@ -77,11 +80,14 @@ public:
     // 数据相关
     string datapath_;
     string slugpath_;
+    string respath_;
+
     vector<string> vsku_;
     vector<float> vsize_;
     vector<int> vnum_;
     vector<float> vprice_;
-    vector<bool> vuplist_;
+    // 0: unprocessed 1: processed 2: invalid size 3: unfound
+    vector<int> vuplist_;
 
     // url,token信息
     string token_;
@@ -109,17 +115,16 @@ public:
     map<string, string> products_slug_;
     map<string, string> slug_products_;
     map<string, int> products_id_;
-    map<string, vector<float>> slug_size_;
+    map<string, set<float>> slug_size_;
     queue<pair<string, float>> processed_;    // 已经上架
     queue<pair<string, float>> unprocessed_;  // 未上架
+    queue<pair<string, float>> invalid_;      // 尺码不存在的
+    queue<pair<string, float>> unfound_;      // 没有找到的
     int total_num_;           // 总共要上架的数量
     
     mutex mtxslug_; // 处理product_slug
 
     // list
-    vector<int> vlistid_; 
-
-
     mutex mtxsearch_;
     int numsearchthread_;
     int patchsearchsize_;
