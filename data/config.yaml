@@ -45,7 +45,7 @@ account:  "hfk0503@outlook.com"
 password: "lsnhfk519"
 
 # 表格位置
-datapath: "/home/zhwang/WZH/SneakerAPI/file/data.xlsx"
+datapath: "/home/zhwang/WZH/SneakerAPI-Cpp/data/上架模板.xlsx"
 
 # slug位置；
 slugpath: "/home/zhwang/WZH/SneakerAPI-Cpp/data/skudata.txt"

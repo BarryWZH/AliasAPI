@@ -1,0 +1,137 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "product": {
+      "id": "wales-bonner-x-japan-hazy-yellow-dark-brown-gy5752",
+      "grid_picture_url": "https://image.goat.com/glow-4-5-25/375/attachments/product_template_pictures/images/070/734/483/original/903242_00.png.png",
+      "sku": "GY5752",
+      "name": "Wales Bonner x Japan 'Hazy Yellow Dark Brown'",
+      "has_picture": true,
+      "release_date": "2022-02-17T23:59:59.999Z",
+      "colorway": "Hazy Yellow/Spice Yellow/Dark Brown",
+      "brand": "adidas",
+      "nickname": "Hazy Yellow Dark Brown",
+      "gender": "men",
+      "size_unit": "us",
+      "type": "sneakers",
+      "story": "<p>The Wales Bonner x adidas Japan ‘Hazy Yellow Dark Brown’ is drawn from a capsule collection designed in collaboration with the acclaimed British fashion label. Grace Wales Bonner’s take on the vintage silhouette is highlighted by a yellow textile upper with tonal suede overlays at the forefoot and heel. Contrasting brown leather detailing is utilized on the eyestay, heel tab and signature three-stripes. The low-profile rubber sole features a herringbone tread underfoot.</p>\n",
+      "size_options": [
+        {
+          "name": "3",
+          "value": 3
+        },
+        {
+          "name": "3.5",
+          "value": 3.5
+        },
+        {
+          "name": "4",
+          "value": 4
+        },
+        {
+          "name": "4.5",
+          "value": 4.5
+        },
+        {
+          "name": "5",
+          "value": 5
+        },
+        {
+          "name": "5.5",
+          "value": 5.5
+        },
+        {
+          "name": "6",
+          "value": 6
+        },
+        {
+          "name": "6.5",
+          "value": 6.5
+        },
+        {
+          "name": "7",
+          "value": 7
+        },
+        {
+          "name": "7.5",
+          "value": 7.5
+        },
+        {
+          "name": "8",
+          "value": 8
+        },
+        {
+          "name": "8.5",
+          "value": 8.5
+        },
+        {
+          "name": "9",
+          "value": 9
+        },
+        {
+          "name": "9.5",
+          "value": 9.5
+        },
+        {
+          "name": "10",
+          "value": 10
+        },
+        {
+          "name": "10.5",
+          "value": 10.5
+        },
+        {
+          "name": "11",
+          "value": 11
+        },
+        {
+          "name": "11.5",
+          "value": 11.5
+        },
+        {
+          "name": "12",
+          "value": 12
+        },
+        {
+          "name": "12.5",
+          "value": 12.5
+        },
+        {
+          "name": "13",
+          "value": 13
+        },
+        {
+          "name": "13.5",
+          "value": 13.5
+        },
+        {
+          "name": "14",
+          "value": 14
+        },
+        {
+          "name": "14.5",
+          "value": 14.5
+        },
+        {
+          "name": "15",
+          "value": 15
+        },
+        {
+
+
+
+---------------------------------------------------------------
+
+{
+  "code": 404,
+  "msg": "success",
+  "data": ""
+}
+
+
+
+
+
+
+

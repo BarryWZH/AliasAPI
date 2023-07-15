@@ -49,13 +49,17 @@ public:
 
     bool login();
 
-    void search_by_sku(string keyword, int page, bool& found);
+    void search_by_sku(string keyword, int page, string& str, int& found);
 
-    void save_sku(string filename);
+    void get_product_detail(string slug, vector<float>& size, int& found);
+
+    // void save_sku(string filename);
+
+    void save_sku();
 
     void patch_search();
 
-    void listing_product_multi(string params, vector<pair<string, int>>& mpdata);
+    void listing_product_multi(string params);
 
 public:
 
@@ -67,7 +71,7 @@ public:
 
     void processJson(const string& jsonStr);
 
-private:
+public:
     cv::FileStorage fs_;
 
     // 数据相关
@@ -103,8 +107,11 @@ private:
 
     // product_slug_id: <sku, slug>
     map<string, string> products_slug_;
-    queue<pair<string, int>> processed_;    // 已经上架
-    queue<pair<string, int>> unprocessed_;  // 未上架
+    map<string, string> slug_products_;
+    map<string, int> products_id_;
+    map<string, vector<float>> slug_size_;
+    queue<string> processed_;    // 已经上架
+    queue<string> unprocessed_;  // 未上架
     int total_num_;           // 总共要上架的数量
     
     mutex mtxslug_; // 处理product_slug

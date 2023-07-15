@@ -1,0 +1,220 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "succeeded": [
+      {
+        "id": "tinman-elite-x-adizero-avanti-tyo-white-gold-metallic-5e7aa28a-6e2c-450c-bda5-b8475af0f038",
+        "status": "active",
+        "condition": "1",
+        "shoe_condition": "new",
+        "box_condition": "good_condition",
+        "price_cents": "8000",
+        "product_condition": "PRODUCT_CONDITION_NEW",
+        "packaging_condition": "PACKAGING_CONDITION_GOOD_CONDITION",
+        "size_option": {
+          "name": "8",
+          "value": 8
+        },
+        "required_pictures": [
+          "TAG",
+          "OUTER",
+          "PACKAGING"
+        ],
+        "size_unit": "us",
+        "eligible_fulfillment_methods": [
+          "SHIP_TO_VERIFY",
+          "DROP_OFF_TO_VERIFY"
+        ],
+        "fulfillment_method": "SHIP_TO_VERIFY",
+        "is_fungible": true,
+        "activated_at": "2023-07-14T14:52:31.126Z",
+        "product": {
+          "id": "tinman-elite-x-adizero-avanti-tyo-white-gold-metallic-gw1385",
+          "grid_picture_url": "https://image.goat.com/glow-4-5-25/375/attachments/product_template_pictures/images/075/085/774/original/GW1385.png.png",
+          "sku": "GW1385",
+          "name": "Tinman Elite x Adizero Avanti TYO 'White Gold Metallic'",
+          "has_picture": true,
+          "retail_price_cents": "15000",
+          "release_date": "2022-04-14T23:59:59.999Z",
+          "colorway": "Cloud White/Gold Metallic/Grey Two",
+          "brand": "adidas",
+          "nickname": "White Gold Metallic",
+          "gender": "men",
+          "size_unit": "us",
+          "type": "sneakers",
+          "size_options": [
+            {
+              "name": "3",
+              "value": 3
+            },
+            {
+              "name": "3.5",
+              "value": 3.5
+            },
+            {
+              "name": "4",
+              "value": 4
+            },
+            {
+              "name": "4.5",
+              "value": 4.5
+            },
+            {
+              "name": "5",
+              "value": 5
+            },
+            {
+              "name": "5.5",
+              "value": 5.5
+            },
+            {
+              "name": "6",
+              "value": 6
+            },
+            {
+              "name": "6.5",
+              "value": 6.5
+            },
+            {
+              "name": "7",
+              "value": 7
+            },
+            {
+              "name": "7.5",
+              "value": 7.5
+            },
+            {
+              "name": "8",
+              "value": 8
+            },
+            {
+              "name": "8.5",
+              "value": 8.5
+            },
+            {
+              "name": "9",
+              "value": 9
+            },
+            {
+              "name": "9.5",
+              "value": 9.5
+            },
+            {
+              "name": "10",
+              "value": 10
+            },
+            {
+              "name": "10.5",
+              "value": 10.5
+            },
+            {
+              "name": "11",
+              "value": 11
+            },
+            {
+              "name": "11.5",
+              "value": 11.5
+            },
+            {
+              "name": "12",
+              "value": 12
+            },
+            {
+              "name": "12.5",
+              "value": 12.5
+            },
+            {
+              "name": "13",
+              "value": 13
+            },
+            {
+              "name": "13.5",
+              "value": 13.5
+            },
+            {
+              "name": "14",
+              "value": 14
+            },
+            {
+              "name": "14.5",
+              "value": 14.5
+            },
+            {
+              "name": "15",
+              "value": 15
+            },
+            {
+              "name": "16",
+              "value": 16
+            },
+            {
+              "name": "17",
+              "value": 17
+            },
+            {
+              "name": "18",
+              "value": 18
+            },
+            {
+              "name": "19",
+              "value": 19
+            },
+            {
+              "name": "20",
+              "value": 20
+            }
+          ],
+          "main_picture_url": "https://image.goat.com/glow-4-5-25/750/attachments/product_template_pictures/images/075/085/774/original/GW1385.png.png",
+          "special_type": "SPECIAL_TYPE_STANDARD",
+          "eligible_fulfillment_methods": [
+            "SHIP_TO_VERIFY",
+            "DROP_OFF_TO_VERIFY"
+          ],
+          "is_offerable": true,
+          "is_international": true,
+          "presentation_sku": {
+            "name": "GW1385",
+            "value": "GW1385"
+          }
+        },
+        "sales_channels": [
+          "SALES_CHANNEL_GOAT",
+          "SALES_CHANNEL_FLIGHT_CLUB"
+        ]
+      }
+    ]
+  }
+}
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------
+
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "failed": [
+      {
+        "product_id": "tinman-elite-x-adizero-avanti-tyo-white-gold-metallic-gw1385",
+        "condition": "1",
+        "shoe_condition": "new",
+        "box_condition": "good_condition",
+        "price_cents": "300",
+        "size_option": {
+          "name": "7",
+          "value": 7
+        },
+        "fulfillment_method": "SHIP_TO_VERIFY"
+      }
+    ]
+  }
+}
