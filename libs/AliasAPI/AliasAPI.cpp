@@ -160,7 +160,7 @@ void AliasAPI::getData(){
             }
 
             // 存在该尺码则添加到代处理队列
-            if(slug_size_[vsku_[i]].count(vsize_[i])){
+            if(slug_size_[products_slug_[vsku_[i]]].count(vsize_[i])){
                 unprocessed_.push({vsku_[i], vsize_[i]});
             }
             // 不存在该尺码则放入不合理队列
@@ -173,7 +173,7 @@ void AliasAPI::getData(){
 
     cout << "TotalNum UpList:        " << total_num_ << endl;
     cout << "TotalNum NeedProcessed: " << unprocessed_.size() << endl;
-    cout << "TotalNum InValud:       " << invalid_.size() << endl;
+    cout << "TotalNum InValid:       " << invalid_.size() << endl;
     cout << "TotalNum UnFound:       " << unfound_.size() << endl;
  
     // 搜索线程设置为0；
@@ -497,6 +497,9 @@ void AliasAPI::listing_product_multi(string params)
     
     curl_easy_setopt(curl_, CURLOPT_URL, requesturl.c_str());
 
+    int successsize = 0;
+    int failsize = 0;
+
     CURLcode res = curl_easy_perform(curl_);
     if(res == CURLE_OK)
     {
@@ -505,18 +508,24 @@ void AliasAPI::listing_product_multi(string params)
         // 分别对succeeded和failed的做处理
         if(jsonData["data"].contains("succeeded"))
         {
-            int size = jsonData["data"]["succeeded"].size();
-            tttt+=size;
-            if(size > 0)
+            successsize = jsonData["data"]["succeeded"].size();
+            tttt+=successsize;
+            cout << "uplist: " << successsize << endl;
+            if(successsize > 0)
             {
-                for(int i=0;i<size;++i)
+                for(int i=0;i<successsize;++i)
                 {
                     string sku = jsonData["data"]["succeeded"][i]["product"]["sku"];
-                    float size = jsonData["data"]["succeeded"][i]["size_option"]["value"];
+                    float s = jsonData["data"]["succeeded"][i]["size_option"]["value"];
                     replace(sku.begin(), sku.end(), ' ', '-');
-                    processed_.push({sku, size});
+                    processed_.push({sku, s});
                 }
             }
+        }
+        else{
+            cout << params << endl;
+            cout << jsonData << endl;
+            cout << "No succeeded!";
         }
 
         // add failure
@@ -531,18 +540,29 @@ void AliasAPI::listing_product_multi(string params)
                 ofs << jsonData << endl;
                 ofs.close();
             }
-            int size = jsonData["data"]["failed"].size();
-            auto temp = jsonData["data"]["failed"];
-            for(int i = 0; i<size; ++i)
+            failsize = jsonData["data"]["failed"].size();
+            if(failsize > 0)
             {
-                string slug = temp[i]["product_id"];
-                float size = temp[i]["size_option"]["value"];
-                string sku = slug_products_[slug];
-                unprocessed_.push({sku, size});
+                auto temp = jsonData["data"]["failed"];
+                cout << "failed: " << failsize << endl;
+                for (int i = 0; i < failsize; ++i)
+                {
+                    string slug = temp[i]["product_id"];
+                    float s = temp[i]["size_option"]["value"];
+                    string sku = slug_products_[slug];
+                    cout << sku << " " << s << endl;
+                    unprocessed_.push({sku, s});
+                }
             }
-            
+        }
+        else{
+            cout << "no fail\n";
         }
     }   
+    else
+    {
+        cout << "res failed!\n";
+    }
 }
 
 void AliasAPI::autoUpList()
@@ -598,7 +618,7 @@ void AliasAPI::autoUpList()
     cout << "Unprocessed queue size: " << unprocessed_.size() << endl;
 
     cout << "TotalNum UpList:        " << total_num_ << endl;
-    cout << "TotalNum InValud:       " << invalid_.size() << endl;
+    cout << "TotalNum InValid:       " << invalid_.size() << endl;
     cout << "TotalNum UnFound:       " << unfound_.size() << endl;
 
     WriteResult();
