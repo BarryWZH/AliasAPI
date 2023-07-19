@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <chrono>
 #include <set>
+#include <iomanip>
 using namespace std;
 using json = nlohmann::json;
 
@@ -50,7 +51,7 @@ public:
 
     bool login();
 
-    void search_by_sku(string keyword, int page, string& str, int& found);
+    void search_by_sku(string keyword, int page, string& slug, vector<float>& vsize, int& found);
 
     void get_product_detail(string slug, vector<float>& size, int& found);
 
@@ -58,7 +59,7 @@ public:
 
     void save_sku();
 
-    void patch_search();
+    void save_sku(string& inputfile, string& outputfile);
 
     void listing_product_multi(string params);
 
@@ -76,6 +77,8 @@ public:
 
 public:
     cv::FileStorage fs_;
+    chrono::steady_clock::time_point start_, end_;
+    
 
     // 数据相关
     string datapath_;
@@ -99,6 +102,7 @@ public:
     // 调试输出信息
     bool use_debug_;
     bool use_verbose_;
+    bool initializewithsavesku_;
 
     // curl
     CURL* curl_;

@@ -97,51 +97,50 @@ void AliasAPI::readConfig(string configfilepath)
 
     fs_["patchsearchsize"] >> patchsearchsize_;
     fs_["patchuplistsize"] >> patchuplistsize_;
+
+    fs_["initializewithsavesku"] >> initializewithsavesku_;
 }
 
 void AliasAPI::getData(){
 
-    xlnt::workbook wb;
+    ifstream ifs(datapath_);
 
-    try {
-        wb.load(datapath_);
-    } catch (const std::exception& e) {
-        std::cerr << "Failed to load workbook: " << e.what() << std::endl;
-        return;
+    if(!ifs.is_open())
+    {
+        cerr << "Error Path!\n";
+        exit(1);
     }
 
-    // 获取第一个工作表
-    auto ws = wb.active_sheet();
-    
-    // 遍历行和列
-    int height = ws.rows().length();
-    int width = ws.columns().length();
+    string sku;
+    float size, price;
+    int num, flag;
 
     // 加载上架数据
-    for (int i = 1; i < height; ++i)
+    int n=0;
+    while(!ifs.eof())
     {
-        auto cellrow = ws.rows()[i];
+        ifs >> sku >> size >> num >> price >> flag;
         // sku
-        string str = cellrow[0].to_string();
-        replace(str.begin(), str.end(), ' ', '-');
-        vsku_.push_back(str);
+        replace(sku.begin(), sku.end(), ' ', '-');
+        vsku_.push_back(sku);
         // size
-        vsize_.push_back(atof(cellrow[1].to_string().c_str()));
+        vsize_.push_back(size);
         // num
-        vnum_.push_back(atoi(cellrow[2].to_string().c_str()));
+        vnum_.push_back(num);
         // price * 100
-        vprice_.push_back(atof(cellrow[3].to_string().c_str()) * 100);
+        vprice_.push_back(price * 100);
         // uplist flag
-        vuplist_.push_back(atoi(cellrow[4].to_string().c_str()));
+        vuplist_.push_back(flag);
         // sku2id
-        products_id_[str] = i-1;
+        products_id_[sku] = n++;
     }
 
     // 加载本地存储的slug信息和对应尺码信息
     loadSlug();
 
     // 更新slug信息和对应的尺码信息
-    save_sku();
+    if(initializewithsavesku_)
+        save_sku();
 
     // 处理一些状态量
     total_num_ = 0;
@@ -193,6 +192,7 @@ void AliasAPI::loadSlug()
     string sku, slug;
     int n;
     float size;
+    int num=0;
     while(!ifs.eof())
     {
         ifs >> sku >> slug >> n;
@@ -203,9 +203,12 @@ void AliasAPI::loadSlug()
             ifs >> size;
             slug_size_[slug].insert(size);
         }
+        num++;
     }
 
     ifs.close();
+
+    cout << "Load " << num << " Slug!\n";
 }
 
 void AliasAPI::initializeCurl()
@@ -241,6 +244,7 @@ void AliasAPI::getToken(){
         return;
     if(!login())
         return;
+    start_ = chrono::steady_clock::now();
     init_flag_ = true;
     cout << "Get token successful!" << endl;
 }
@@ -252,8 +256,11 @@ string AliasAPI::ping(){
 
 bool AliasAPI::init_auth()
 {
+    response_.clear();
     string requesturl = base_url_ + function_url_["init_auth_url"] + "?token=" + token_;
     curl_easy_setopt(curl_, CURLOPT_URL, requesturl.c_str());
+
+    // cout << "Request: " << requesturl << endl;
 
     CURLcode res = curl_easy_perform(curl_);
     if(res == CURLE_OK)
@@ -261,6 +268,7 @@ bool AliasAPI::init_auth()
         json jsonData = json::parse(response_);
         if(jsonData.contains("data")){
             auth_ = jsonData["data"]["auth"];
+            // cout << auth_ << endl;
             return true;
         }
         else
@@ -296,7 +304,7 @@ bool AliasAPI::login()
     return false;
 }
 
-void AliasAPI::search_by_sku(string keyword, int page, string& slug, int& found)
+void AliasAPI::search_by_sku(string keyword, int page, string& slug, vector<float>& vsize, int& found)
 {
     response_.clear();
     string requesturl = base_url_ + function_url_["query_by_sku_url"] + "?token=" + token_
@@ -314,7 +322,15 @@ void AliasAPI::search_by_sku(string keyword, int page, string& slug, int& found)
         if(jsonData["data"]["hits"].size() > 0){
             // products_slug_[keyword] = jsonData["data"]["hits"][0]["slug"];
             // cout << products_slug_[keyword] << endl;
-            slug = jsonData["data"]["hits"][0]["slug"];
+            auto temp = jsonData["data"]["hits"][0];
+            int size = temp["size_range"].size();
+            for(int i=0; i<size; ++i)
+            {
+                float s = temp["size_range"][i];
+                if(s==0) continue;
+                vsize.push_back(s);
+            }
+            slug = temp["slug"];
             found = 1;
         }
         else
@@ -357,54 +373,6 @@ void AliasAPI::get_product_detail(string slug, vector<float>& vsize, int& found)
     
 }
 
-// void AliasAPI::save_sku(string filename)
-// {
-//     map<string, string> sku2slug;
-//     bool isfound;
-//     queue<string> q;
-//     for(int i=0; i<vsku_.size(); ++i){
-//         q.push(vsku_[i]);
-//     }
-//     int num=0;
-//     int N = 10;   // 10个线程
-//     vector<string> vslug(N);
-//     vector<string> vkey(N);
-//     vector<int64_t> vb(N);
-//     vector<thread> vthread;
-//     mutex mtx;
-//     ofstream ofs(filename, ios::app);
-//     while(!q.empty())
-//     {
-//         vthread.clear();
-//         int num = 0;
-//         while(num < N)
-//         {
-//             if(q.empty()) break;
-//             string keyword = q.front();
-//             q.pop();
-//             if(sku2slug.count(keyword))
-//                 continue;
-//             vkey[num] = keyword;
-//             vthread.push_back(thread(&AliasAPI::search_by_sku, this, keyword, 0, ref(vslug[num]), vb[num]));
-//             num++;
-//         }
-//         for(int i=0; i<vthread.size(); ++i)
-//             vthread[i].join();
-
-//         for(int i=0; i<vthread.size();++i)
-//         {
-//             if(vb[i])
-//             {
-//                 sku2slug[vkey[i]] = vslug[i];
-//                 ofs << vkey[i] << " " << vslug[i] << endl;
-//             }
-//             else
-//                 q.push(vkey[i]);
-//         }
-//     }
-//     ofs.close();
-// }
-
 void AliasAPI::save_sku()
 {
     ofstream ofs(slugpath_, ios::app);
@@ -418,6 +386,11 @@ void AliasAPI::save_sku()
     string slug;
     while(!q.empty())
     {
+        end_ = chrono::steady_clock::now();
+        double span = chrono::duration<double>(end_ - start_).count();
+        cout << span << " s\n";
+        if(span > 3540)
+            getToken();
         cout << q.size() << endl;
         string keyword = q.front();
         q.pop();
@@ -425,10 +398,10 @@ void AliasAPI::save_sku()
         if(products_slug_.count(keyword)) 
         {
             // found
-            cout << endl;
+            cout << " already save" << endl;
             continue;
         }
-        search_by_sku(keyword, 0, slug, isfound);
+        // search_by_sku(keyword, 0, slug, isfound);
         if(isfound)
         {
             vector<float> vsize;
@@ -468,22 +441,73 @@ void AliasAPI::save_sku()
     ofs.close();
 }
 
-void AliasAPI::patch_search()
+void AliasAPI::save_sku(string& inputfile, string& outputfile)
 {
-    while(1)
+    vector<string> vsku;
+    string str;
+    ifstream ifs(inputfile);
+    while(!ifs.eof())
     {
-        if(unprocessed_.size() > 0)
+        ifs >> str;
+        vsku.push_back(str);
+    }
+
+    ofstream ofs(outputfile, ios::app);
+    int isfound = 0;
+    queue<string> q;
+    for(int i=0; i<vsku.size(); ++i){
+        if(products_slug_.count(vsku[i])) continue;
+        q.push(vsku[i]);
+    }
+    int num=0;
+    string slug;
+    while (!q.empty() && init_flag_)
+    {
+        end_ = chrono::steady_clock::now();
+        double span = chrono::duration<double>(end_ - start_).count();
+        cout << "Time cost: " << setw(7) << span << " s\t" << "Left: " << q.size() << endl;
+        if (span > 3600)
         {
-            mtxsearch_.lock();
-            bool found = false;
-            if(numsearchthread_ <= patchsearchsize_)
-                // string word = unprocessed_.front();
-                unprocessed_.pop();
-                
-                // thread t(&AliasAPI::search_by_sku, this, std::move(word), 0, std::move(found));
-            
+            init_flag_ = false;
+            getToken();
+            start_ = chrono::steady_clock::now();
+        }
+        string keyword = q.front();
+        q.pop();
+        cout << num++ << " " << keyword;
+        if (products_slug_.count(keyword))
+        {
+            // found
+            cout << " already save" << endl;
+            continue;
+        }
+        vector<float> vsize;
+        search_by_sku(keyword, 0, slug, vsize, isfound);
+        if (isfound)
+        {
+            cout << " " << slug << " ";
+            cout << vsize.size() << " ";
+            products_slug_[keyword] = slug;
+            slug_products_[slug] = keyword;
+            for (int i = 0; i < vsize.size(); ++i)
+            {
+                slug_size_[slug].insert(vsize[i]);
+                cout << vsize[i] << " ";
+            }
+            cout << endl;
+            ofs << keyword << " " << slug << " ";
+            ofs << vsize.size() << " ";
+            for (int i = 0; i < vsize.size(); ++i)
+                ofs << vsize[i] << " ";
+            ofs << endl;
+        }
+        else
+        {
+            q.push(keyword);
+            cout << endl;
         }
     }
+    ofs.close();
 }
 
 void AliasAPI::listing_product_multi(string params)
@@ -523,8 +547,13 @@ void AliasAPI::listing_product_multi(string params)
             }
         }
         else{
-            cout << params << endl;
-            cout << jsonData << endl;
+            // cout << params << endl;
+            // cout << jsonData << endl;
+            ofstream ofs("/home/zhwang/WZH/SneakerAPI-Cpp/skusearch/out.txt", ios::app);
+            json data = json::parse(params);
+            string str = data["products"][0]["sku"];
+            ofs << str << endl;
+            ofs.close();
             cout << "No succeeded!";
         }
 

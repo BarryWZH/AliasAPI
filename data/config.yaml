@@ -39,16 +39,18 @@ patchsearchsize: 10
 
 patchuplistsize: 50
 
+initializewithsavesku: 0
+
 
 # 账号信息
 account:  "hfk0503@outlook.com"
 password: "lsnhfk519"
 
 # 表格位置
-datapath: "/home/zhwang/WZH/SneakerAPI-Cpp/data/上架模板.xlsx"
+datapath: "/home/zhwang/WZH/SneakerAPI-Cpp/data/data.txt"
 
 # slug位置
-slugpath: "/home/zhwang/WZH/SneakerAPI-Cpp/data/slugsize.txt"
+slugpath: "/home/zhwang/WZH/SneakerAPI-Cpp/data/multi/merge.txt"
 
 # 上架结果存储位置
 respath: "/home/zhwang/WZH/SneakerAPI-Cpp/res/"

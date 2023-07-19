@@ -1,0 +1,254 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "hits": [
+      {
+        "product_template_id": 1029043,
+        "shoe_condition": "new_no_defects",
+        "box_condition": "good_condition",
+        "activity": null,
+        "brand_name": "Under Armour",
+        "breadcrumb_path_url": null,
+        "category": [
+          "running"
+        ],
+        "color": "White",
+        "designer": null,
+        "details": "White/Opal Green",
+        "gender": [
+          "women"
+        ],
+        "grid_glow_picture_url": "https://image.goat.com/glow-4-5-25/375/attachments/product_template_pictures/images/077/321/607/original/3025526_102.png.png",
+        "grid_picture_url": "https://image.goat.com/375/attachments/product_template_pictures/images/077/321/607/original/3025526_102.png.png",
+        "has_picture": true,
+        "has_under_retail_availability": false,
+        "keywords": [],
+        "main_glow_picture_url": "https://image.goat.com/glow-4-5-25/750/attachments/product_template_pictures/images/077/321/607/original/3025526_102.png.png",
+        "main_picture_url": "https://image.goat.com/750/attachments/product_template_pictures/images/077/321/607/original/3025526_102.png.png",
+        "midsole": "Charged",
+        "name": "Wmns Charged Rogue 3 'White Opal Green'",
+        "nickname": "White Opal Green",
+        "original_picture_url": "https://image.goat.com/attachments/product_template_pictures/images/077/321/607/original/3025526_102.png.png",
+        "product_category": "shoes",
+        "product_type": "sneakers",
+        "release_date": "2022-08-24T23:59:59.999Z",
+        "release_date_name": null,
+        "retail_price_cents": 8000,
+        "search_sku": "3025526102",
+        "season": null,
+        "season_year": null,
+        "silhouette": "Charged Rogue",
+        "single_gender": "women",
+        "size_brand": "under_armour",
+        "size_range": [
+          3.5,
+          4,
+          4.5,
+          5,
+          5.5,
+          6,
+          6.5,
+          7,
+          7.5,
+          8,
+          8.5,
+          9,
+          9.5,
+          10,
+          10.5,
+          11,
+          11.5,
+          12,
+          12.5,
+          13,
+          13.5,
+          14,
+          15
+        ],
+        "sku": "3025526 102",
+        "slug": "wmns-charged-rogue-3-white-opal-green-3025526-102",
+        "special_display_price_cents": 8000,
+        "special_type": "standard",
+        "status": "active",
+        "story_html": null,
+        "upper_material": "Mesh",
+        "is_china_domestic": null,
+        "lowest_price_cents": 13000,
+        "instant_ship_lowest_price_cents": null,
+        "collection_slugs": [],
+        "has_stock": true,
+        "size": 7,
+        "presentation_size": "7",
+        "release_year": 2022,
+        "release_month": 8,
+        "is_wantable": true,
+        "id": 1029043,
+        "is_under_retail": false,
+        "is_fashion_product": false,
+        "is_raffle_product": false,
+        "resellable": true,
+        "direct_shipping": false,
+        "size_us_men": 5.5,
+        "size_us_women": 7,
+        "size_us_youth": 5.5,
+        "size_us_infant": null,
+        "size_uk_men": 5,
+        "size_uk_women": 4.5,
+        "size_uk_youth": 5,
+        "size_uk_infant": null,
+        "size_eu_men": 38,
+        "size_eu_women": 38,
+        "size_eu_youth": 38,
+        "size_eu_infant": null,
+        "size_fr_men": 39,
+        "size_fr_women": 39,
+        "size_fr_youth": 39,
+        "size_fr_infant": null,
+        "size_it_men": 38,
+        "size_it_women": 38,
+        "size_it_youth": 38,
+        "size_it_infant": null,
+        "size_jp_men": null,
+        "size_jp_women": null,
+        "size_jp_youth": null,
+        "size_jp_infant": null,
+        "lowest_price_cents_usd": 13000,
+        "instant_ship_lowest_price_cents_usd": null,
+        "retail_price_cents_usd": 8000,
+        "lowest_price_cents_aud": 19800,
+        "instant_ship_lowest_price_cents_aud": null,
+        "retail_price_cents_aud": 12200,
+        "lowest_price_cents_cad": 17500,
+        "instant_ship_lowest_price_cents_cad": null,
+        "retail_price_cents_cad": 10800,
+        "lowest_price_cents_cny": 95300,
+        "instant_ship_lowest_price_cents_cny": null,
+        "retail_price_cents_cny": 58700,
+        "lowest_price_cents_eur": 12200,
+        "instant_ship_lowest_price_cents_eur": null,
+        "retail_price_cents_eur": 7500,
+        "lowest_price_cents_gbp": 10400,
+        "instant_ship_lowest_price_cents_gbp": null,
+        "retail_price_cents_gbp": 6400,
+        "lowest_price_cents_hkd": 102900,
+        "instant_ship_lowest_price_cents_hkd": null,
+        "retail_price_cents_hkd": 63300,
+        "lowest_price_cents_sgd": 17800,
+        "instant_ship_lowest_price_cents_sgd": null,
+        "retail_price_cents_sgd": 11000,
+        "lowest_price_cents_twd": 410600,
+        "instant_ship_lowest_price_cents_twd": null,
+        "retail_price_cents_twd": 252700,
+        "lowest_price_cents_jpy": 1900000,
+        "instant_ship_lowest_price_cents_jpy": null,
+        "retail_price_cents_jpy": 1169300,
+        "lowest_price_cents_krw": 17129700,
+        "instant_ship_lowest_price_cents_krw": null,
+        "retail_price_cents_krw": 10541400,
+        "lowest_price_cents_myr": 61200,
+        "instant_ship_lowest_price_cents_myr": null,
+        "retail_price_cents_myr": 37700,
+        "main_display_picture_url": "https://image.goat.com/750/attachments/product_template_pictures/images/077/321/607/original/3025526_102.png.png",
+        "grid_display_picture_url": "https://image.goat.com/375/attachments/product_template_pictures/images/077/321/607/original/3025526_102.png.png",
+        "number_of_related_listings": "",
+        "product_taxonomy": {},
+        "objectID": "22257639",
+        "_highlightResult": {
+          "product_template_id": {
+            "value": "1029043",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "brand_name": {
+            "value": "Under Armour",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "color": {
+            "value": "White",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "details": {
+            "value": "White/Opal Green",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "gender": [
+            {
+              "value": "women",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          ],
+          "midsole": {
+            "value": "Charged",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "name": {
+            "value": "Wmns Charged Rogue 3 'White Opal Green'",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "product_type": {
+            "value": "sneakers",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "search_sku": {
+            "value": "3025526102",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "silhouette": {
+            "value": "Charged Rogue",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "sku": {
+            "value": "<em>3025526 102</em>",
+            "matchLevel": "full",
+            "fullyHighlighted": true,
+            "matchedWords": [
+              "3025526",
+              "102"
+            ]
+          }
+        }
+      }
+    ],
+    "nbHits": 1,
+    "page": 0,
+    "nbPages": 1,
+    "hitsPerPage": 20,
+    "facets": {
+      "product_type": {
+        "sneakers": 10
+      }
+    },
+    "exhaustiveFacetsCount": false,
+    "exhaustiveNbHits": true,
+    "exhaustiveTypo": true,
+    "exhaustive": {
+      "facetsCount": false,
+      "nbHits": true,
+      "typo": true
+    },
+    "query": "3025526-102",
+    "params": "analyticsTags=%5B%22platform%3Aandroid%22%2C%22channel%3Aalias%22%5D&distinct=true&facets=%5B%22product_type%22%5D&filters=product_category%3Ashoes&hitsPerPage=20&page=0&query=3025526-102",
+    "renderingContent": {},
+    "processingTimeMS": 2,
+    "processingTimingsMS": {
+      "fetch": {
+        "total": 2
+      },
+      "request": {
+        "roundTrip": 304
+      },
+      "total": 2
+    },
+    "serverTimeMS": 2
+  }
+}

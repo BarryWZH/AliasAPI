@@ -1,0 +1,266 @@
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "hits": [
+      {
+        "product_template_id": 513966,
+        "shoe_condition": null,
+        "box_condition": null,
+        "lowest_price_cents": null,
+        "instant_ship_lowest_price_cents": null,
+        "activity": "lifestyle",
+        "brand_name": "New Balance",
+        "breadcrumb_path_url": null,
+        "category": [
+          "lifestyle"
+        ],
+        "color": "White",
+        "designer": "",
+        "details": "Off White/Grey",
+        "gender": [
+          "women"
+        ],
+        "grid_glow_picture_url": "https://image.goat.com/glow-4-5-25/375/attachments/product_template_pictures/images/021/317/627/original/WL373OSP.png.png",
+        "grid_picture_url": "https://image.goat.com/375/attachments/product_template_pictures/images/021/317/627/original/WL373OSP.png.png",
+        "has_picture": true,
+        "has_under_retail_availability": false,
+        "keywords": [],
+        "main_glow_picture_url": "https://image.goat.com/glow-4-5-25/750/attachments/product_template_pictures/images/021/317/627/original/WL373OSP.png.png",
+        "main_picture_url": "https://image.goat.com/750/attachments/product_template_pictures/images/021/317/627/original/WL373OSP.png.png",
+        "midsole": "",
+        "name": "Wmns 373 'Off White'",
+        "nickname": "Off White",
+        "original_picture_url": "https://image.goat.com/attachments/product_template_pictures/images/021/317/627/original/WL373OSP.png.png",
+        "product_category": "shoes",
+        "product_type": "sneakers",
+        "release_date": null,
+        "release_date_name": null,
+        "retail_price_cents": 0,
+        "search_sku": "wl373osp",
+        "season": null,
+        "season_year": null,
+        "silhouette": "373",
+        "single_gender": "women",
+        "size_brand": "new_balance",
+        "size_range": [
+          5,
+          5.5,
+          6,
+          6.5,
+          7,
+          7.5,
+          8,
+          8.5,
+          9,
+          9.5,
+          10,
+          10.5,
+          11,
+          11.5,
+          12,
+          12.5,
+          13,
+          13.5,
+          14,
+          15
+        ],
+        "sku": "WL373OSP",
+        "slug": "wmns-373-off-white-wl373osp",
+        "special_display_price_cents": 0,
+        "special_type": "sample",
+        "status": "active",
+        "story_html": null,
+        "upper_material": "",
+        "is_china_domestic": null,
+        "collection_slugs": [],
+        "has_stock": false,
+        "size": null,
+        "presentation_size": "",
+        "release_year": null,
+        "release_month": null,
+        "is_wantable": true,
+        "id": 513966,
+        "is_under_retail": false,
+        "is_fashion_product": false,
+        "is_raffle_product": false,
+        "resellable": true,
+        "direct_shipping": false,
+        "size_us_men": null,
+        "size_us_women": null,
+        "size_us_youth": null,
+        "size_us_infant": null,
+        "size_uk_men": null,
+        "size_uk_women": null,
+        "size_uk_youth": null,
+        "size_uk_infant": null,
+        "size_eu_men": null,
+        "size_eu_women": null,
+        "size_eu_youth": null,
+        "size_eu_infant": null,
+        "size_fr_men": null,
+        "size_fr_women": null,
+        "size_fr_youth": null,
+        "size_fr_infant": null,
+        "size_it_men": null,
+        "size_it_women": null,
+        "size_it_youth": null,
+        "size_it_infant": null,
+        "size_jp_men": null,
+        "size_jp_women": null,
+        "size_jp_youth": null,
+        "size_jp_infant": null,
+        "lowest_price_cents_usd": null,
+        "instant_ship_lowest_price_cents_usd": null,
+        "retail_price_cents_usd": 0,
+        "lowest_price_cents_aud": null,
+        "instant_ship_lowest_price_cents_aud": null,
+        "retail_price_cents_aud": 0,
+        "lowest_price_cents_cad": null,
+        "instant_ship_lowest_price_cents_cad": null,
+        "retail_price_cents_cad": 0,
+        "lowest_price_cents_cny": null,
+        "instant_ship_lowest_price_cents_cny": null,
+        "retail_price_cents_cny": 0,
+        "lowest_price_cents_eur": null,
+        "instant_ship_lowest_price_cents_eur": null,
+        "retail_price_cents_eur": 0,
+        "lowest_price_cents_gbp": null,
+        "instant_ship_lowest_price_cents_gbp": null,
+        "retail_price_cents_gbp": 0,
+        "lowest_price_cents_hkd": null,
+        "instant_ship_lowest_price_cents_hkd": null,
+        "retail_price_cents_hkd": 0,
+        "lowest_price_cents_sgd": null,
+        "instant_ship_lowest_price_cents_sgd": null,
+        "retail_price_cents_sgd": 0,
+        "lowest_price_cents_twd": null,
+        "instant_ship_lowest_price_cents_twd": null,
+        "retail_price_cents_twd": 0,
+        "lowest_price_cents_jpy": null,
+        "instant_ship_lowest_price_cents_jpy": null,
+        "retail_price_cents_jpy": 0,
+        "lowest_price_cents_krw": null,
+        "instant_ship_lowest_price_cents_krw": null,
+        "retail_price_cents_krw": 0,
+        "lowest_price_cents_myr": null,
+        "instant_ship_lowest_price_cents_myr": null,
+        "retail_price_cents_myr": 0,
+        "main_display_picture_url": "https://image.goat.com/750/attachments/product_template_pictures/images/021/317/627/original/WL373OSP.png.png",
+        "grid_display_picture_url": "https://image.goat.com/375/attachments/product_template_pictures/images/021/317/627/original/WL373OSP.png.png",
+        "number_of_related_listings": "",
+        "product_taxonomy": {},
+        "objectID": "1020249",
+        "_highlightResult": {
+          "product_template_id": {
+            "value": "513966",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "activity": {
+            "value": "lifestyle",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "brand_name": {
+            "value": "New Balance",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "color": {
+            "value": "White",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "designer": {
+            "value": "",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "details": {
+            "value": "Off White/Grey",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "gender": [
+            {
+              "value": "women",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          ],
+          "midsole": {
+            "value": "",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "name": {
+            "value": "Wmns 373 'Off White'",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "product_type": {
+            "value": "sneakers",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "search_sku": {
+            "value": "<em>wl373osp</em>",
+            "matchLevel": "full",
+            "fullyHighlighted": true,
+            "matchedWords": [
+              "wl373osp"
+            ]
+          },
+          "silhouette": {
+            "value": "373",
+            "matchLevel": "none",
+            "matchedWords": []
+          },
+          "sku": {
+            "value": "<em>WL373OSP</em>",
+            "matchLevel": "full",
+            "fullyHighlighted": true,
+            "matchedWords": [
+              "wl373osp"
+            ]
+          }
+        }
+      }
+    ],
+    "nbHits": 1,
+    "page": 0,
+    "nbPages": 1,
+    "hitsPerPage": 20,
+    "facets": {
+      "product_type": {
+        "sneakers": 1
+      }
+    },
+    "exhaustiveFacetsCount": false,
+    "exhaustiveNbHits": false,
+    "exhaustiveTypo": false,
+    "exhaustive": {
+      "facetsCount": false,
+      "nbHits": false,
+      "typo": false
+    },
+    "query": "WL373OSP",
+    "params": "analyticsTags=%5B%22platform%3Aandroid%22%2C%22channel%3Aalias%22%5D&distinct=true&facets=%5B%22product_type%22%5D&filters=product_category%3Ashoes&hitsPerPage=20&page=0&query=WL373OSP",
+    "renderingContent": {},
+    "processingTimeMS": 18,
+    "processingTimingsMS": {
+      "afterFetch": {
+        "total": 1
+      },
+      "fetch": {
+        "total": 17
+      },
+      "request": {
+        "roundTrip": 341
+      },
+      "total": 18
+    },
+    "serverTimeMS": 19
+  }
+}
