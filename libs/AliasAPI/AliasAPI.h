@@ -38,6 +38,8 @@ public:
 
     void initializeCurl();
 
+    void resetCurl();
+
     // 获取auth_token, access_token
     void getToken();
 
@@ -61,7 +63,7 @@ public:
 
     void save_sku(string& inputfile, string& outputfile);
 
-    void listing_product_multi(string params);
+    void listing_product_multi(string params, vector<string>& vsku);
 
 public:
 

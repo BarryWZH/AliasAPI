@@ -16,16 +16,17 @@ struct Data
 
 void splitData()
 {
-    ifstream ifs("/home/zhwang/WZH/SneakerAPI-Cpp/data/data.txt");
+    ifstream ifs("/home/zhwang/WZH/SneakerAPI-Cpp/data/30wdata.txt");
     string sku;
     float size, price;
     int num, flag;
     vector<string> vsku;
     while (!ifs.eof())
     {
-        ifs >> sku >> size >> num >> price >> flag;
+        ifs >> sku;// >> size >> num >> price >> flag;
         vsku.push_back(sku);
     }
+    cout << vsku.size() << endl;
     int patchsize = (vsku.size() / N)+1;
     int pn = 0;
     // for(int i=0; i<N; ++i)
@@ -87,31 +88,31 @@ void mergeData()
     }
 
     // 原始文件
-    ifstream ifs("/home/zhwang/WZH/SneakerAPI-Cpp/data/multi/merge.txt");
-    string sku, slug;
-    int numsize;
-    float size;
-    while (!ifs.eof())
-    {
-        Data d;
-        ifs >> sku >> slug >> numsize;
-        if(ifs.eof())
-        {
-            ifs.close();
-            break;
-        }
-        d.sku_ = sku;
-        d.slug_ = slug;
-        d.numsize_ = numsize;
-        for (int i = 0; i < numsize; ++i)
-        {
-            ifs >> size;
-            d.vsize_.push_back(size);
-        }
-        mp[sku] = d;
-        ifs.get();
-    }
-    ifs.close();
+    // ifstream ifs("/home/zhwang/WZH/SneakerAPI-Cpp/data/multi/merge.txt");
+    // string sku, slug;
+    // int numsize;
+    // float size;
+    // while (!ifs.eof())
+    // {
+    //     Data d;
+    //     ifs >> sku >> slug >> numsize;
+    //     if(ifs.eof())
+    //     {
+    //         ifs.close();
+    //         break;
+    //     }
+    //     d.sku_ = sku;
+    //     d.slug_ = slug;
+    //     d.numsize_ = numsize;
+    //     for (int i = 0; i < numsize; ++i)
+    //     {
+    //         ifs >> size;
+    //         d.vsize_.push_back(size);
+    //     }
+    //     mp[sku] = d;
+    //     ifs.get();
+    // }
+    // ifs.close();
 
     ofstream ofs("/home/zhwang/WZH/SneakerAPI-Cpp/data/multi/merge.txt");
     int nn = 0;
@@ -131,18 +132,18 @@ void mergeData()
 int main(int argc, char** argv)
 {
     // splitData();
-    if(argc != 3)
-    {
-        cout << "testAPI ${skufilepath} ${slugsizefilepath}\n";
-        exit(1);
-    }
+    // if(argc != 3)
+    // {
+    //     cout << "testAPI ${skufilepath} ${slugsizefilepath}\n";
+    //     exit(1);
+    // }
 
-    mergeData();
+    // mergeData();
 
     AliasAPI ap("/home/zhwang/WZH/SneakerAPI-Cpp/data/config.yaml");
     // ap.autoUpList();
-    string input = argv[1], output = argv[2];
-    ap.save_sku(input, output);
+    // string input = argv[1], output = argv[2];
+    // ap.save_sku(input, output);
 
     return 0;
 }

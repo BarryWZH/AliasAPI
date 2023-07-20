@@ -39,7 +39,7 @@ patchsearchsize: 10
 
 patchuplistsize: 50
 
-initializewithsavesku: 0
+initializewithsavesku: 1
 
 
 # 账号信息

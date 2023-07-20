@@ -3,7 +3,9 @@ using namespace std;
 
 #define DEBUG 0
 
-int tttt=0;
+int success = 0;
+int unsuccess = 0;
+int fail = 0;
 
 AliasAPI::AliasAPI(string configfilepath){
 
@@ -219,6 +221,14 @@ void AliasAPI::initializeCurl()
         cout << "Init curl successful!\n";
     else
         cout << "Init curl failed!\n";
+    
+    resetCurl();
+}
+
+void AliasAPI::resetCurl()
+{
+    // 清除状态
+    curl_easy_reset(curl_);
 
     // 设置请求头
     headers_ = NULL;
@@ -240,10 +250,19 @@ void AliasAPI::initializeCurl()
 }
 
 void AliasAPI::getToken(){
+
+    resetCurl();
+
     if(!init_auth())
+    {
+        cout << "init auth failed\n";
         return;
+    }
     if(!login())
+    {
+        cout << "Login failed\n";
         return;
+    }
     start_ = chrono::steady_clock::now();
     init_flag_ = true;
     cout << "Get token successful!" << endl;
@@ -263,6 +282,7 @@ bool AliasAPI::init_auth()
     // cout << "Request: " << requesturl << endl;
 
     CURLcode res = curl_easy_perform(curl_);
+    // cout << response_ << endl;
     if(res == CURLE_OK)
     {
         json jsonData = json::parse(response_);
@@ -375,61 +395,57 @@ void AliasAPI::get_product_detail(string slug, vector<float>& vsize, int& found)
 
 void AliasAPI::save_sku()
 {
+    vector<string> vsku;
+    string str;
+
     ofstream ofs(slugpath_, ios::app);
     int isfound = 0;
     queue<string> q;
-    for(int i=0; i<vsku_.size(); ++i){
-        if(products_slug_.count(vsku_[i])) continue;
-        q.push(vsku_[i]);
+    for(int i=0; i<vsku.size(); ++i){
+        if(products_slug_.count(vsku[i])) continue;
+        q.push(vsku[i]);
     }
     int num=0;
     string slug;
-    while(!q.empty())
+    while (!q.empty() && init_flag_)
     {
         end_ = chrono::steady_clock::now();
         double span = chrono::duration<double>(end_ - start_).count();
-        cout << span << " s\n";
-        if(span > 3540)
+        cout << "Time cost: " << setw(7) << span << " s\t" << "Left: " << q.size() << endl;
+        if (span > 3600)
+        {
+            init_flag_ = false;
             getToken();
-        cout << q.size() << endl;
+            start_ = chrono::steady_clock::now();
+        }
         string keyword = q.front();
         q.pop();
         cout << num++ << " " << keyword;
-        if(products_slug_.count(keyword)) 
+        if (products_slug_.count(keyword))
         {
             // found
             cout << " already save" << endl;
             continue;
         }
-        // search_by_sku(keyword, 0, slug, isfound);
-        if(isfound)
+        vector<float> vsize;
+        search_by_sku(keyword, 0, slug, vsize, isfound);
+        if (isfound)
         {
-            vector<float> vsize;
-            get_product_detail(slug, vsize, isfound);
-            if(isfound)
+            cout << " " << slug << " ";
+            cout << vsize.size() << " ";
+            products_slug_[keyword] = slug;
+            slug_products_[slug] = keyword;
+            for (int i = 0; i < vsize.size(); ++i)
             {
-                cout << " " << slug << " ";
-                cout << vsize.size() << " ";
-                products_slug_[keyword] = slug;
-                slug_products_[slug] = keyword;
-                for(int  i=0; i<vsize.size(); ++i)
-                {
-                    slug_size_[slug].insert(vsize[i]);
-                    cout << vsize[i] << " ";
-                }
-                cout << endl;
-                ofs << keyword << " " << slug << " ";
-                ofs << vsize.size() << " ";
-                for(int i=0; i<vsize.size(); ++i)
-                    ofs << vsize[i] << " ";
-                ofs << endl;
+                slug_size_[slug].insert(vsize[i]);
+                cout << vsize[i] << " ";
             }
-            else
-            {
-                q.push(keyword);
-                cout << endl;
-                continue;
-            }
+            cout << endl;
+            ofs << keyword << " " << slug << " ";
+            ofs << vsize.size() << " ";
+            for (int i = 0; i < vsize.size(); ++i)
+                ofs << vsize[i] << " ";
+            ofs << endl;
         }
         else
         {
@@ -437,7 +453,6 @@ void AliasAPI::save_sku()
             cout << endl;
         }
     }
-    cout << "savesku complete!\n";
     ofs.close();
 }
 
@@ -510,7 +525,7 @@ void AliasAPI::save_sku(string& inputfile, string& outputfile)
     ofs.close();
 }
 
-void AliasAPI::listing_product_multi(string params)
+void AliasAPI::listing_product_multi(string params, vector<string>& vsku)
 {
     response_.clear();
     string requesturl = base_url_ + function_url_["listing_product_multi_url"] + "?token=" + token_
@@ -533,28 +548,31 @@ void AliasAPI::listing_product_multi(string params)
         if(jsonData["data"].contains("succeeded"))
         {
             successsize = jsonData["data"]["succeeded"].size();
-            tttt+=successsize;
+            success+=successsize;
             cout << "uplist: " << successsize << endl;
             if(successsize > 0)
             {
+                string path = respath_ + "/successful.txt";
+                ofstream ofs(path, ios::app);
                 for(int i=0;i<successsize;++i)
                 {
                     string sku = jsonData["data"]["succeeded"][i]["product"]["sku"];
+                    ofs << sku << endl;
                     float s = jsonData["data"]["succeeded"][i]["size_option"]["value"];
                     replace(sku.begin(), sku.end(), ' ', '-');
                     processed_.push({sku, s});
                 }
+                ofs.close();
             }
         }
         else{
-            // cout << params << endl;
-            // cout << jsonData << endl;
-            ofstream ofs("/home/zhwang/WZH/SneakerAPI-Cpp/skusearch/out.txt", ios::app);
-            json data = json::parse(params);
-            string str = data["products"][0]["sku"];
-            ofs << str << endl;
+            string path = respath_ + "/unseccessful.txt";
+            ofstream ofs(path, ios::app);
+            for(auto it:vsku)
+                ofs << it << endl;
             ofs.close();
-            cout << "No succeeded!";
+            cout << "No successful!";
+            unsuccess += vsku.size();
         }
 
         // add failure
@@ -570,8 +588,11 @@ void AliasAPI::listing_product_multi(string params)
                 ofs.close();
             }
             failsize = jsonData["data"]["failed"].size();
+            fail += failsize;
             if(failsize > 0)
             {
+                string path = respath_ + "/fail.txt";
+                ofstream ofs(path, ios::app);
                 auto temp = jsonData["data"]["failed"];
                 cout << "failed: " << failsize << endl;
                 for (int i = 0; i < failsize; ++i)
@@ -580,12 +601,14 @@ void AliasAPI::listing_product_multi(string params)
                     float s = temp[i]["size_option"]["value"];
                     string sku = slug_products_[slug];
                     cout << sku << " " << s << endl;
+                    ofs << sku << endl;
                     unprocessed_.push({sku, s});
                 }
+                ofs.close();
             }
         }
         else{
-            cout << "no fail\n";
+            // cout << "No fail\n";
         }
     }   
     else
@@ -608,8 +631,9 @@ void AliasAPI::autoUpList()
     json jsonData;
     json products;
     string slug;
+    vector<string> patchsku;
 
-    while(!unprocessed_.empty())
+    while(!unprocessed_.empty() && init_flag_)
     {
         // cout << "Unprocessed: " << unprocessed_.size() << endl;
         string keyword = unprocessed_.front().first;
@@ -627,22 +651,37 @@ void AliasAPI::autoUpList()
         temp["size_us"] = vsize_[id];
 
         products.push_back(temp);
+        patchsku.push_back(keyword);
         patch++;
 
         if(patch >= patchuplistsize_){
+
+            end_ = chrono::steady_clock::now();
+            double span = chrono::duration<double>(end_ - start_).count();
+            cout << "Time cost: " << setw(7) << span << " s\t" << "Left" << setw(7) << unprocessed_.size() << endl;
+            if (span > 3500)
+            {
+                init_flag_ = false;
+                getToken();
+                start_ = chrono::steady_clock::now();
+            }
+
             jsonData["products"] = products;
             // cout << jsonData.dump() << endl;
             auto t1 = chrono::steady_clock::now();
-            listing_product_multi(jsonData.dump());
+            listing_product_multi(jsonData.dump(), patchsku);
             auto t2 = chrono::steady_clock::now();
             cout << "multiuplist: " << chrono::duration<double>(t2 - t1).count() << " s" << endl;
             patch = 0;
             products.clear();
             jsonData.clear();
+            patchsku.clear();
         }
     }
 
-    cout << "Successful Uplist:      " << tttt << endl;
+    cout << "Successful Uplist:      " << success << endl;
+    cout << "UnSuccessful Uplist:    " << unsuccess << endl;
+    cout << "Fail Uplist:            " << fail << endl;
     cout << "Processed queue size:   " << processed_.size() << endl;
     cout << "Unprocessed queue size: " << unprocessed_.size() << endl;
 
@@ -650,8 +689,7 @@ void AliasAPI::autoUpList()
     cout << "TotalNum InValid:       " << invalid_.size() << endl;
     cout << "TotalNum UnFound:       " << unfound_.size() << endl;
 
-    WriteResult();
-
+    // WriteResult();
 }
 
 // --------------------- function -----------------------
