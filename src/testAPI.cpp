@@ -88,31 +88,79 @@ void mergeData()
     }
 
     // 原始文件
-    // ifstream ifs("/home/zhwang/WZH/SneakerAPI-Cpp/data/multi/merge.txt");
-    // string sku, slug;
-    // int numsize;
-    // float size;
-    // while (!ifs.eof())
-    // {
-    //     Data d;
-    //     ifs >> sku >> slug >> numsize;
-    //     if(ifs.eof())
-    //     {
-    //         ifs.close();
-    //         break;
-    //     }
-    //     d.sku_ = sku;
-    //     d.slug_ = slug;
-    //     d.numsize_ = numsize;
-    //     for (int i = 0; i < numsize; ++i)
-    //     {
-    //         ifs >> size;
-    //         d.vsize_.push_back(size);
-    //     }
-    //     mp[sku] = d;
-    //     ifs.get();
-    // }
-    // ifs.close();
+    ifstream ifs("/home/zhwang/WZH/SneakerAPI-Cpp/copy/merge3.txt");
+    string sku, slug;
+    int numsize;
+    float size;
+    while (!ifs.eof())
+    {
+        Data d;
+        ifs >> sku >> slug >> numsize;
+        if(ifs.eof())
+        {
+            ifs.close();
+            break;
+        }
+        d.sku_ = sku;
+        d.slug_ = slug;
+        d.numsize_ = numsize;
+        for (int i = 0; i < numsize; ++i)
+        {
+            ifs >> size;
+            d.vsize_.push_back(size);
+        }
+        mp[sku] = d;
+        ifs.get();
+    }
+    ifs.close();
+
+    ifs.open("/home/zhwang/WZH/SneakerAPI-Cpp/copy/merge2.txt");
+    while (!ifs.eof())
+    {
+        Data d;
+        ifs >> sku >> slug >> numsize;
+        if(ifs.eof())
+        {
+            ifs.close();
+            break;
+        }
+        d.sku_ = sku;
+        d.slug_ = slug;
+        d.numsize_ = numsize;
+        for (int i = 0; i < numsize; ++i)
+        {
+            ifs >> size;
+            d.vsize_.push_back(size);
+        }
+        mp[sku] = d;
+        ifs.get();
+    }
+    ifs.close();
+
+    ifs.open("/home/zhwang/WZH/SneakerAPI-Cpp/copy/merge1.txt");
+    while (!ifs.eof())
+    {
+        Data d;
+        ifs >> sku >> slug >> numsize;
+        if(ifs.eof())
+        {
+            ifs.close();
+            break;
+        }
+        d.sku_ = sku;
+        d.slug_ = slug;
+        d.numsize_ = numsize;
+        for (int i = 0; i < numsize; ++i)
+        {
+            ifs >> size;
+            d.vsize_.push_back(size);
+        }
+        mp[sku] = d;
+        ifs.get();
+    }
+    ifs.close();
+
+
 
     ofstream ofs("/home/zhwang/WZH/SneakerAPI-Cpp/data/multi/merge.txt");
     int nn = 0;
@@ -138,9 +186,9 @@ int main(int argc, char** argv)
     //     exit(1);
     // }
 
-    // mergeData();
+    mergeData();
 
-    AliasAPI ap("/home/zhwang/WZH/SneakerAPI-Cpp/data/config.yaml");
+    // AliasAPI ap("/home/zhwang/WZH/SneakerAPI-Cpp/data/config.yaml");
     // ap.autoUpList();
     // string input = argv[1], output = argv[2];
     // ap.save_sku(input, output);
